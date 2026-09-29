@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import tempfile
 import json
@@ -8,8 +9,14 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel
 import pandas as pd
 import pymupdf
+
+# Ensure portal_connectors package is importable from the same directory
+_HERE = Path(__file__).parent.resolve()
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
 
 from preprocess import process_single_document
 from ocr_engine import process_document_ocr
@@ -17,6 +24,12 @@ from extractor import extract_land_record_fields
 from matching import match_extracted_to_reference
 from gemini_extractor import extract_with_gemini
 from risk_calculator import calculate_land_record_risk
+from portal_connectors import (
+    get_portal_connector,
+    detect_state,
+    SUPPORTED_STATES,
+    portal_result_to_dict,
+)
 
 # Load environment variables from .env if present
 env_file = Path(__file__).parent / ".env"
@@ -265,6 +278,21 @@ async def analyze_land_record(file: UploadFile = File(...)):
         # Preview image URLs if generated
         preview_urls = [f"/static/previews/{p.name}" for p in image_paths if p.exists()]
 
+        # 6. State Detection + Portal Verification
+        flat_extracted = {
+            k: (v.get("normalized") or v.get("original") if isinstance(v, dict) else str(v or ""))
+            for k, v in fields_data.items()
+        }
+        detected_state = detect_state(flat_extracted, ocr_text=full_text)
+        portal_verification = None
+        if detected_state:
+            try:
+                connector = get_portal_connector(detected_state)
+                pv_result = connector.verify(flat_extracted)
+                portal_verification = portal_result_to_dict(pv_result)
+            except Exception as pv_err:
+                print(f"[PortalVerification] Error during portal check: {pv_err}")
+
         return {
             "document_id": doc_id,
             "file_name": file.filename,
@@ -279,7 +307,9 @@ async def analyze_land_record(file: UploadFile = File(...)):
             "gis_parcel": gis_parcel,
             "preview_urls": preview_urls,
             "ocr_text_length": len(full_text),
-            "ocr_text_sample": full_text[:500] if full_text else ""
+            "ocr_text_sample": full_text[:500] if full_text else "",
+            "detected_state": detected_state,
+            "portal_verification": portal_verification,
         }
 
     except Exception as e:
@@ -306,6 +336,118 @@ async def get_sample_document_analysis(doc_id: str):
     with open(pdf_file, "rb") as f:
         file_obj = UploadFile(filename=pdf_file.name, file=f)
         return await analyze_land_record(file_obj)
+
+# ─────────────────────────────────────────────────────────────
+# Portal API Endpoints
+# ─────────────────────────────────────────────────────────────
+
+@app.get("/api/portal/states")
+async def list_portal_states():
+    """Returns the list of supported Indian states for portal verification."""
+    return {
+        "supported_states": SUPPORTED_STATES,
+        "portals": {
+            "Bihar": {
+                "name": "Bihar Bhumi — Apna Khata",
+                "url": "https://land.bihar.gov.in/",
+                "data_source": "REFERENCE_DATA + USER_ASSISTED",
+            },
+            "West Bengal": {
+                "name": "Banglarbhumi (RS/LR Khatian)",
+                "url": "https://banglarbhumi.gov.in/",
+                "data_source": "REFERENCE_DATA + USER_ASSISTED",
+            },
+            "Assam": {
+                "name": "ILRMS Assam / Dharitree",
+                "url": "https://ilrms.assam.gov.in/",
+                "data_source": "REFERENCE_DATA + USER_ASSISTED",
+            },
+        }
+    }
+
+
+class PortalVerifyRequest(BaseModel):
+    state: Optional[str] = None
+    fields: dict = {}
+    ocr_text: str = ""
+
+
+@app.post("/api/portal/verify")
+async def portal_verify(req: PortalVerifyRequest):
+    """
+    Manually trigger portal verification for a given state and extracted fields.
+    Useful for re-running verification after a state change or user-assisted submission.
+    """
+    state = req.state
+    if not state:
+        state = detect_state(req.fields, ocr_text=req.ocr_text)
+    if not state:
+        raise HTTPException(status_code=400, detail="Could not detect state. Please specify 'state' explicitly.")
+    if state not in SUPPORTED_STATES:
+        raise HTTPException(status_code=400, detail=f"State '{state}' is not yet supported. Supported: {SUPPORTED_STATES}")
+    try:
+        connector = get_portal_connector(state)
+        result = connector.verify(req.fields, use_cache=False)
+        return portal_result_to_dict(result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Portal verification error: {str(e)}")
+
+
+class UserAssistedSubmitRequest(BaseModel):
+    state: str
+    fields: dict = {}
+    user_provided: dict = {}   # Data the user retrieved from the official portal
+
+
+@app.post("/api/portal/user-assisted/submit")
+async def user_assisted_submit(req: UserAssistedSubmitRequest):
+    """
+    Accepts data retrieved by the user from the official state portal
+    (owner name, area, etc.) and re-runs cross-validation.
+    Returns a PortalVerificationResult with data_source='LIVE_RESULT'.
+    """
+    from portal_connectors.base_connector import (
+        PortalLandRecord, PortalVerificationResult,
+        cross_validate, build_inconsistency_summary, portal_result_to_dict as _dict
+    )
+    up = req.user_provided
+    portal_record = PortalLandRecord(
+        owner_name=up.get("owner_name"),
+        khata_number=up.get("khata_number"),
+        plot_number=up.get("plot_number"),
+        land_area=up.get("land_area"),
+        district=up.get("district"),
+        block_circle=up.get("block_circle"),
+        village_mouza=up.get("village_mouza"),
+        mutation_status=up.get("mutation_status"),
+    )
+    comparisons = cross_validate(req.fields, portal_record)
+    has_inconsistency = any(c.inconsistency_flag for c in comparisons)
+    summary = build_inconsistency_summary(comparisons)
+
+    connector_cls_map = {
+        "Bihar": "BiharPortalConnector",
+        "West Bengal": "WestBengalPortalConnector",
+        "Assam": "AssamPortalConnector",
+    }
+    connector = get_portal_connector(req.state)
+
+    result = PortalVerificationResult(
+        state=req.state,
+        data_source="LIVE_RESULT",
+        mode="USER_ASSISTED",
+        portal_name=connector.portal_name,
+        portal_url=connector.portal_url,
+        portal_deeplink=None,
+        portal_record=portal_record,
+        field_comparisons=comparisons,
+        has_inconsistency=has_inconsistency,
+        inconsistency_summary=summary,
+        confidence=0.90,
+        instructions=None,
+    )
+    return portal_result_to_dict(result)
+
 
 if __name__ == "__main__":
     import uvicorn

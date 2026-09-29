@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# BhuVerify generated outputs
+Bihar_Land_OCR_Dataset/data/outputs/
+
+# Python cache
+__pycache__/
+*.pyc
