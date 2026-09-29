@@ -1,0 +1,44 @@
+{
+    "document_id": "BR_PATNA_SAMPATCHAK_006",
+    "overall_confidence": 0.3625,
+    "percentage": "36%",
+    "status": "MISMATCH",
+    "field_scores": {
+        "computerized_jamabandi_number": {
+            "extracted": "212140100157117",
+            "reference": 212140100157117.0,
+            "score": 0.85,
+            "weight": 0.25
+        },
+        "jamabandi_number": {
+            "extracted": "212140",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khata_number": {
+            "extracted": "0",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khesra_plot_number": {
+            "extracted": "0",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "raiyat_name": {
+            "extracted": "",
+            "reference": "\"AABHA DEVI\"",
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "mauja": {
+            "extracted": "Karnpura-121",
+            "reference": "Karnpura-121",
+            "score": 1.0,
+            "weight": 0.15
+        }
+    }
+}

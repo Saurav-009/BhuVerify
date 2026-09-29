@@ -1,0 +1,90 @@
+{
+    "document_id": "BR_PATNA_SAMPATCHAK_009",
+    "overall_extraction_confidence": 0.8357,
+    "fields": {
+        "computerized_jamabandi_number": {
+            "original": "212140100153737",
+            "normalized": "212140100153737",
+            "corrected": "212140100153737",
+            "confidence": 1.0
+        },
+        "jamabandi_number": {
+            "original": "212140",
+            "normalized": "212140",
+            "corrected": "212140",
+            "confidence": 1.0
+        },
+        "bhag_vartaman": {
+            "original": "20",
+            "normalized": "20",
+            "corrected": "20",
+            "confidence": 1.0
+        },
+        "prishth_sankhya": {
+            "original": "100",
+            "normalized": "100",
+            "corrected": "100",
+            "confidence": 1.0
+        },
+        "district": {
+            "original": "Patna",
+            "normalized": "Patna",
+            "corrected": "Patna",
+            "confidence": 0.95
+        },
+        "anchal": {
+            "original": "Sampatchak",
+            "normalized": "Sampatchak",
+            "corrected": "Sampatchak",
+            "confidence": 0.95
+        },
+        "halka": {
+            "original": "BAIRIYA KARNPURA",
+            "normalized": "BAIRIYA KARNPURA",
+            "corrected": "BAIRIYA KARNPURA",
+            "confidence": 0.95
+        },
+        "mauja": {
+            "original": "Karnpura-121",
+            "normalized": "Karnpura-121",
+            "corrected": "Karnpura-121",
+            "confidence": 0.95
+        },
+        "raiyat_name": {
+            "original": "",
+            "normalized": "",
+            "corrected": "",
+            "confidence": 0.0
+        },
+        "father_or_husband_name": {
+            "original": "",
+            "normalized": "",
+            "corrected": "",
+            "confidence": 0.0
+        },
+        "khata_number": {
+            "original": "0",
+            "normalized": "0",
+            "corrected": "0",
+            "confidence": 1.0
+        },
+        "khesra_plot_number": {
+            "original": "0",
+            "normalized": "0",
+            "corrected": "0",
+            "confidence": 1.0
+        },
+        "land_area": {
+            "original": "0   ए    2.0477   िड   0   हे",
+            "normalized": "0 ए 2.0477 िड 0 हे",
+            "corrected": "0 ए 2.0477 िड 0 हे",
+            "confidence": 0.95
+        },
+        "mutation_status": {
+            "original": "Mutation Cases Not Found",
+            "normalized": "Mutation Cases Not Found",
+            "corrected": "Mutation Cases Not Found",
+            "confidence": 0.95
+        }
+    }
+}

@@ -1,0 +1,275 @@
+{
+    "processed_documents": {
+        "BR_PATNA_SAMPATCHAK_001": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_001",
+                "file_name": "BR_PATNA_SAMPATCHAK_001.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100008933",
+                    "jamabandi_number": "278",
+                    "bhag_vartaman": "5",
+                    "prishth_sankhya": "682",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 0 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:06:56"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_002": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_002",
+                "file_name": "BR_PATNA_SAMPATCHAK_002.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100009361",
+                    "jamabandi_number": "577",
+                    "bhag_vartaman": "5",
+                    "prishth_sankhya": "502",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 0 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:00"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_003": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_003",
+                "file_name": "BR_PATNA_SAMPATCHAK_003.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100091188",
+                    "jamabandi_number": "63",
+                    "bhag_vartaman": "1",
+                    "prishth_sankhya": "63",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 0 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:03"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_004": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_004",
+                "file_name": "BR_PATNA_SAMPATCHAK_004.pdf",
+                "total_pages": 2,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100115241",
+                    "jamabandi_number": "778",
+                    "bhag_vartaman": "21",
+                    "prishth_sankhya": "778",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "2 ए 41.5 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:09"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_005": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_005",
+                "file_name": "BR_PATNA_SAMPATCHAK_005.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100129896",
+                    "jamabandi_number": "73",
+                    "bhag_vartaman": "4",
+                    "prishth_sankhya": "73",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 67.969 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:13"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_006": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_006",
+                "file_name": "BR_PATNA_SAMPATCHAK_006.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100157117",
+                    "jamabandi_number": "212140",
+                    "bhag_vartaman": "21",
+                    "prishth_sankhya": "60",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 1.5759 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.3625,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:17"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_007": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_007",
+                "file_name": "BR_PATNA_SAMPATCHAK_007.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100126423",
+                    "jamabandi_number": "212140",
+                    "bhag_vartaman": "15",
+                    "prishth_sankhya": "49",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "AGAMKUAN",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 11.48 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.2152,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:21"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_008": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_008",
+                "file_name": "BR_PATNA_SAMPATCHAK_008.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100153737",
+                    "jamabandi_number": "212140",
+                    "bhag_vartaman": "20",
+                    "prishth_sankhya": "100",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 2.0477 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.15,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:25"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_009": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_009",
+                "file_name": "BR_PATNA_SAMPATCHAK_009.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100153737",
+                    "jamabandi_number": "212140",
+                    "bhag_vartaman": "20",
+                    "prishth_sankhya": "100",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 2.0477 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.3625,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:29"
+            }
+        },
+        "BR_PATNA_SAMPATCHAK_010": {
+            "status": "SUCCESS",
+            "result": {
+                "document_id": "BR_PATNA_SAMPATCHAK_010",
+                "file_name": "BR_PATNA_SAMPATCHAK_010.pdf",
+                "total_pages": 1,
+                "extracted_fields": {
+                    "computerized_jamabandi_number": "212140100126229",
+                    "jamabandi_number": "212140",
+                    "bhag_vartaman": "15",
+                    "prishth_sankhya": "40",
+                    "district": "Patna",
+                    "anchal": "Sampatchak",
+                    "halka": "BAIRIYA KARNPURA",
+                    "mauja": "Karnpura-121",
+                    "raiyat_name": "Ben",
+                    "father_or_husband_name": "",
+                    "khata_number": "0",
+                    "khesra_plot_number": "0",
+                    "land_area": "0 ए 2.0664 िड 0 हे",
+                    "mutation_status": "Mutation Cases Not Found"
+                },
+                "overall_confidence": 0.3886,
+                "verification_status": "MISMATCH",
+                "timestamp": "2026-09-05 03:07:33"
+            }
+        }
+    },
+    "last_updated": "2026-09-05 03:07:33"
+}

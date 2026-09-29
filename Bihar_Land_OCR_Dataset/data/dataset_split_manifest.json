@@ -1,0 +1,32 @@
+{
+    "total_documents": 10,
+    "split_counts": {
+        "train": 7,
+        "validation": 1,
+        "test": 2
+    },
+    "splits": {
+        "train": [
+            "BR_PATNA_SAMPATCHAK_001",
+            "BR_PATNA_SAMPATCHAK_002",
+            "BR_PATNA_SAMPATCHAK_003",
+            "BR_PATNA_SAMPATCHAK_004",
+            "BR_PATNA_SAMPATCHAK_005",
+            "BR_PATNA_SAMPATCHAK_006",
+            "BR_PATNA_SAMPATCHAK_007"
+        ],
+        "validation": [
+            "BR_PATNA_SAMPATCHAK_008"
+        ],
+        "test": [
+            "BR_PATNA_SAMPATCHAK_009",
+            "BR_PATNA_SAMPATCHAK_010"
+        ]
+    },
+    "leakage_check": {
+        "intersection_train_val": 0,
+        "intersection_train_test": 0,
+        "intersection_val_test": 0,
+        "passed": true
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "document_id": "BR_PATNA_SAMPATCHAK_001",
+    "overall_confidence": 0.15,
+    "percentage": "15%",
+    "status": "MISMATCH",
+    "field_scores": {
+        "computerized_jamabandi_number": {
+            "extracted": "212140100008933",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.25
+        },
+        "jamabandi_number": {
+            "extracted": "278",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khata_number": {
+            "extracted": "0",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khesra_plot_number": {
+            "extracted": "0",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "raiyat_name": {
+            "extracted": "",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "mauja": {
+            "extracted": "Karnpura-121",
+            "reference": "Karnpura-121",
+            "score": 1.0,
+            "weight": 0.15
+        }
+    }
+}

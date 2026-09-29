@@ -1,0 +1,282 @@
+{
+    "summary": {
+        "total_pdf_files": 10,
+        "total_pdf_pages": 11,
+        "pdf_types": {
+            "text_based": 10,
+            "scanned_images": 0,
+            "mixed": 0
+        },
+        "total_image_files": 0,
+        "total_csv_files": 1,
+        "total_excel_files": 0,
+        "total_json_files": 10,
+        "total_txt_files": 20,
+        "languages_detected": [
+            "Hindi (Devanagari)",
+            "English"
+        ],
+        "document_associated_records": 10,
+        "ground_truth_status": {
+            "verified_complete": 1,
+            "partial_ground_truth": 4,
+            "unverified_template": 5
+        }
+    },
+    "csv_dataset_audit": {
+        "file_name": "master_dataset.csv",
+        "total_records": 10,
+        "total_columns": 18,
+        "columns": [
+            "document_id",
+            "file_name",
+            "state",
+            "district",
+            "anchal",
+            "halka",
+            "mauja",
+            "jamabandi_number",
+            "computerized_jamabandi_number",
+            "khata_number",
+            "khesra_plot_number",
+            "raiyat_name",
+            "father_or_husband_name",
+            "land_area",
+            "document_type",
+            "language",
+            "verified",
+            "extracted_text"
+        ],
+        "data_types": {
+            "document_id": "object",
+            "file_name": "object",
+            "state": "object",
+            "district": "object",
+            "anchal": "object",
+            "halka": "object",
+            "mauja": "object",
+            "jamabandi_number": "float64",
+            "computerized_jamabandi_number": "float64",
+            "khata_number": "object",
+            "khesra_plot_number": "object",
+            "raiyat_name": "object",
+            "father_or_husband_name": "object",
+            "land_area": "object",
+            "document_type": "object",
+            "language": "object",
+            "verified": "bool",
+            "extracted_text": "object"
+        },
+        "missing_values": {
+            "document_id": 0,
+            "file_name": 0,
+            "state": 0,
+            "district": 0,
+            "anchal": 0,
+            "halka": 0,
+            "mauja": 0,
+            "jamabandi_number": 10,
+            "computerized_jamabandi_number": 5,
+            "khata_number": 1,
+            "khesra_plot_number": 1,
+            "raiyat_name": 5,
+            "father_or_husband_name": 6,
+            "land_area": 1,
+            "document_type": 0,
+            "language": 0,
+            "verified": 0,
+            "extracted_text": 0
+        },
+        "duplicate_records": 0
+    },
+    "pdf_documents": [
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_001.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_001.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1343,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा N/A 0 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 5 प"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_002.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_002.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1343,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा N/A 0 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 5 प"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_003.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_003.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1471,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 0 0 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 1 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_004.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_004.pdf",
+            "pages": 2,
+            "type": "text-based",
+            "char_length": 2830,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 0 0 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 21 पृ"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_005.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_005.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1377,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 0 0 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 4 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_006.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_006.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1514,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 22 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 21 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_007.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_007.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1650,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 40 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 15 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_008.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_008.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1669,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 46 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 20 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_009.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_009.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1669,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 46 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 20 पृष"
+        },
+        {
+            "file_name": "BR_PATNA_SAMPATCHAK_010.pdf",
+            "relative_path": "Bihar\\Patna\\Sampatchak\\documents\\BR_PATNA_SAMPATCHAK_010.pdf",
+            "pages": 1,
+            "type": "text-based",
+            "char_length": 1662,
+            "sample_text": "Patna Patna Sadar Sampatchak BAIRIYA KARNPURA कण\u0000पुरा 46 121 िबहार  सरकार   राजस्व  एवं  भूिम  सुधार  िवभाग जमाबंदी  पंजी  प्रित भाग  वत\u0000मान  : 15 पृष"
+        }
+    ],
+    "json_ground_truth_documents": [
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_001",
+            "file_name": "BR_PATNA_SAMPATCHAK_001.pdf",
+            "verified": false,
+            "raiyat_name": null,
+            "jamabandi_number": null,
+            "has_parcels": false
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_002",
+            "file_name": "BR_PATNA_SAMPATCHAK_002.pdf",
+            "verified": false,
+            "raiyat_name": null,
+            "jamabandi_number": null,
+            "has_parcels": false
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_003",
+            "file_name": "BR_PATNA_SAMPATCHAK_003.pdf",
+            "verified": false,
+            "raiyat_name": null,
+            "jamabandi_number": null,
+            "has_parcels": false
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_004",
+            "file_name": "BR_PATNA_SAMPATCHAK_004.pdf",
+            "verified": false,
+            "raiyat_name": null,
+            "jamabandi_number": null,
+            "has_parcels": false
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_005",
+            "file_name": "BR_PATNA_SAMPATCHAK_005.pdf",
+            "verified": false,
+            "raiyat_name": null,
+            "jamabandi_number": null,
+            "has_parcels": false
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_006",
+            "file_name": "BR_PATNA_SAMPATCHAK_006.pdf",
+            "verified": true,
+            "raiyat_name": "AABHA DEVI",
+            "jamabandi_number": "212140100157117",
+            "has_parcels": true
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_008",
+            "file_name": "BR_PATNA_SAMPATCHAK_008.pdf",
+            "verified": false,
+            "raiyat_name": [
+                "Raj Kumar Prasad"
+            ],
+            "jamabandi_number": "212140100126423",
+            "has_parcels": true
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_007",
+            "file_name": "BR_PATNA_SAMPATCHAK_007.pdf",
+            "verified": false,
+            "raiyat_name": [
+                "Abhay Kumar"
+            ],
+            "jamabandi_number": "212140100153737",
+            "has_parcels": true
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_009",
+            "file_name": "BR_PATNA_SAMPATCHAK_009.pdf",
+            "verified": false,
+            "raiyat_name": [
+                "Abhay Kumar"
+            ],
+            "jamabandi_number": "212140100153737",
+            "has_parcels": true
+        },
+        {
+            "document_id": "BR_PATNA_SAMPATCHAK_010",
+            "file_name": "BR_PATNA_SAMPATCHAK_010.pdf",
+            "verified": false,
+            "raiyat_name": [
+                "Abhilasha Ranjan"
+            ],
+            "jamabandi_number": "212140100126229",
+            "has_parcels": true
+        }
+    ],
+    "existing_code": {
+        "python_scripts": [
+            "audit_and_setup_phase1_2.py",
+            "create_ground_truth.py",
+            "create_master_dataset.py",
+            "extract_pdf_text.py",
+            "validate_dataset.py"
+        ],
+        "ocr_implementation": "PyPDF text extraction script (extract_pdf_text.py)",
+        "models": "None (No pre-trained ML models present in dataset)",
+        "dependencies": [
+            "pypdf",
+            "pandas",
+            "pdf2image",
+            "pillow",
+            "pytesseract"
+        ]
+    }
+}

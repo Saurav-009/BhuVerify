@@ -1,0 +1,20 @@
+{
+    "model_type": "RandomForestClassifier",
+    "n_estimators": 10,
+    "features": [
+        "computerized_jamabandi_present",
+        "computerized_jamabandi_match",
+        "jamabandi_match",
+        "khata_match",
+        "khesra_match",
+        "raiyat_fuzzy_similarity",
+        "mauja_match",
+        "overall_extraction_confidence"
+    ],
+    "target_classes": [
+        "MISMATCH"
+    ],
+    "trained_samples": 10,
+    "train_accuracy": 1.0,
+    "model_file": "data\\outputs\\record_validation_model.joblib"
+}

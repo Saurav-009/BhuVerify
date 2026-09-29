@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Land Record Digitization & Validation System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navbar -->
+        <header class="navbar">
+            <div class="logo-group">
+                <div class="emblem-icon">🏛️</div>
+                <div>
+                    <h1>Bihar Land Record Verification System</h1>
+                    <p class="subtitle">SIH Prototype — Intelligent OCR & Validation Engine</p>
+                </div>
+            </div>
+            <div class="nav-badges">
+                <span class="badge badge-portal">Jamabandi Register-II</span>
+                <span class="badge badge-state">Bihar Govt Portal</span>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Panel: File Upload & Controls -->
+            <section class="card upload-card">
+                <h2>Document Upload & Analysis</h2>
+                <p class="section-desc">Upload a Jamabandi PDF or scanned image to execute real-time OCR, field extraction, and reference verification.</p>
+                
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon">📄</div>
+                    <div class="dropzone-text">
+                        <strong>Drag & drop land record file</strong>
+                        <span>Supported: PDF, PNG, JPG, JPEG (Max 25MB)</span>
+                    </div>
+                    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff" hidden>
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Browse Document</button>
+                </div>
+
+                <div class="preset-demos">
+                    <label>Or test real Bihar sample records:</label>
+                    <div class="demo-buttons">
+                        <button class="btn btn-secondary" onclick="loadSample('BR_PATNA_SAMPATCHAK_006.pdf')">Sample 006 (Verified GT)</button>
+                        <button class="btn btn-secondary" onclick="loadSample('BR_PATNA_SAMPATCHAK_001.pdf')">Sample 001</button>
+                        <button class="btn btn-secondary" onclick="loadSample('BR_PATNA_SAMPATCHAK_007.pdf')">Sample 007</button>
+                    </div>
+                </div>
+
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="spinner"></div>
+                    <div class="loading-text">
+                        <span id="loadingStep">Executing PDF Preprocessing...</span>
+                        <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results & Verification -->
+            <section class="card results-card" id="resultsCard" style="display: none;">
+                <!-- Header Verification Banner -->
+                <div class="result-banner" id="resultBanner">
+                    <div class="status-group">
+                        <span class="status-indicator" id="statusBadge">VERIFIED</span>
+                        <div>
+                            <h3 id="docTitle">BR_PATNA_SAMPATCHAK_006</h3>
+                            <span class="meta-sub" id="docSub">Jamabandi Register-II • Patna • Sampatchak</span>
+                        </div>
+                    </div>
+                    <div class="score-dial">
+                        <div class="score-num" id="overallScoreNum">96%</div>
+                        <div class="score-label">Overall Confidence</div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTab('comparisonTab')">Field Comparison Matrix</button>
+                    <button class="tab-btn" onclick="switchTab('ocrTextTab')">Raw & Processed OCR Text</button>
+                    <button class="tab-btn" onclick="switchTab('jsonTab')">Structured Response JSON</button>
+                </div>
+
+                <!-- Tab 1: Comparison Matrix -->
+                <div class="tab-content active" id="comparisonTab">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Land Record Field</th>
+                                <th>OCR Extracted Value</th>
+                                <th>Ground-Truth Reference Value</th>
+                                <th>Field Score</th>
+                                <th>Match Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tab 2: OCR Text -->
+                <div class="tab-content" id="ocrTextTab">
+                    <div class="ocr-text-box" id="ocrTextContainer"></div>
+                </div>
+
+                <!-- Tab 3: JSON -->
+                <div class="tab-content" id="jsonTab">
+                    <pre class="json-box" id="jsonContainer"></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+    "total_documents_evaluated": 10,
+    "total_fields_evaluated": 28,
+    "exact_match_accuracy": 0.3571,
+    "fuzzy_match_accuracy": 0.4643,
+    "precision": 0.0,
+    "recall": 1.0,
+    "f1_score": 0.0,
+    "verification_status_counts": {
+        "MISMATCH": 10
+    }
+}

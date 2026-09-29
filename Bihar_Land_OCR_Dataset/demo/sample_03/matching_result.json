@@ -1,0 +1,44 @@
+{
+    "document_id": "BR_PATNA_SAMPATCHAK_007",
+    "overall_confidence": 0.2152,
+    "percentage": "21%",
+    "status": "MISMATCH",
+    "field_scores": {
+        "computerized_jamabandi_number": {
+            "extracted": "212140100126423",
+            "reference": 212140100153737.0,
+            "score": 0.0,
+            "weight": 0.25
+        },
+        "jamabandi_number": {
+            "extracted": "212140",
+            "reference": NaN,
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khata_number": {
+            "extracted": "0",
+            "reference": "[\"46\"]",
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "khesra_plot_number": {
+            "extracted": "0",
+            "reference": "[\"189\"]",
+            "score": 0.0,
+            "weight": 0.15
+        },
+        "raiyat_name": {
+            "extracted": "AGAMKUAN",
+            "reference": "[\"Abhay Kumar\"]",
+            "score": 0.4348,
+            "weight": 0.15
+        },
+        "mauja": {
+            "extracted": "Karnpura-121",
+            "reference": "Karnpura-121",
+            "score": 1.0,
+            "weight": 0.15
+        }
+    }
+}
