@@ -1,0 +1,20 @@
+[
+  {
+    "owner_name": "Ravi Prasad",
+    "survey_number": "105",
+    "khata_number": "89",
+    "village": "Bikram",
+    "district": "Patna",
+    "area_hectare": "0.95",
+    "parcel_id": "BR-PTN-105-89"
+  },
+  {
+    "owner_name": "Asha Kumari",
+    "survey_number": "67C",
+    "khata_number": "12",
+    "village": "Nalanda East",
+    "district": "Nalanda",
+    "area_hectare": "1.10",
+    "parcel_id": "BR-NLD-67C-12"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "owner_name": "Ram Kumar",
+    "survey_number": "12A",
+    "khata_number": "44",
+    "village": "Bhanpur",
+    "district": "Lucknow",
+    "area_hectare": "1.20",
+    "parcel_id": "UP-LKO-12A-44"
+  },
+  {
+    "owner_name": "Sita Devi",
+    "survey_number": "21B",
+    "khata_number": "18",
+    "village": "Raebareli Kalan",
+    "district": "Raebareli",
+    "area_hectare": "0.68",
+    "parcel_id": "UP-RBL-21B-18"
+  }
+]
