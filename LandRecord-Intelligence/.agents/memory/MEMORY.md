@@ -1,0 +1,2 @@
+- [Browser regression setup](browser-regression-setup.md) — Playwright Chromium needs explicit Nix runtime libraries in this workspace for local e2e runs.
+- [OpenAPI numeric compatibility](openapi-zod-compat.md) — With the current Orval/Zod versions, integer schemas generate unsupported z.int(); use numeric schemas for compatible generated validators.

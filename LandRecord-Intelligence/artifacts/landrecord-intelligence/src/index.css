@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+@import 'leaflet/dist/leaflet.css';
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+
+:root {
+  --background: 39 37% 94%; --foreground: 211 30% 18%;
+  --card: 42 31% 98%; --card-foreground: 211 30% 18%;
+  --popover: 42 31% 98%; --popover-foreground: 211 30% 18%;
+  --primary: 181 43% 29%; --primary-foreground: 42 31% 98%;
+  --secondary: 37 31% 88%; --secondary-foreground: 211 30% 18%;
+  --muted: 38 24% 89%; --muted-foreground: 211 13% 45%;
+  --accent: 25 72% 53%; --accent-foreground: 42 31% 98%;
+  --destructive: 2 60% 44%; --destructive-foreground: 42 31% 98%;
+  --border: 38 21% 78%; --input: 38 21% 78%; --ring: 181 43% 29%;
+  --chart-1: 181 43% 29%; --chart-2: 25 72% 53%; --chart-3: 42 55% 42%;
+  --chart-4: 2 60% 44%; --chart-5: 211 30% 18%;
+  --sidebar: 211 30% 18%; --sidebar-foreground: 39 37% 94%; --sidebar-border: 211 24% 28%;
+  --sidebar-primary: 25 72% 53%; --sidebar-primary-foreground: 211 30% 18%;
+  --sidebar-accent: 211 24% 28%; --sidebar-accent-foreground: 39 37% 94%; --sidebar-ring: 25 72% 53%;
+  --app-font-sans: 'DM Sans', sans-serif; --app-font-serif: 'Instrument Serif', Georgia, serif; --app-font-mono: 'DM Mono', monospace;
+  --radius: 0.25rem;
+}
+@theme inline {
+  --color-background: hsl(var(--background)); --color-foreground: hsl(var(--foreground)); --color-border: hsl(var(--border)); --color-input: hsl(var(--input)); --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card)); --color-card-foreground: hsl(var(--card-foreground)); --color-popover: hsl(var(--popover)); --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary)); --color-primary-foreground: hsl(var(--primary-foreground)); --color-secondary: hsl(var(--secondary)); --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted)); --color-muted-foreground: hsl(var(--muted-foreground)); --color-accent: hsl(var(--accent)); --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive)); --color-destructive-foreground: hsl(var(--destructive-foreground)); --font-sans: var(--app-font-sans); --font-serif: var(--app-font-serif); --font-mono: var(--app-font-mono);
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: var(--app-font-sans); }
+button, input, textarea, select { font: inherit; } button, a { -webkit-tap-highlight-color: transparent; }
+.font-mono { font-family: var(--app-font-mono); } .font-serif { font-family: var(--app-font-serif); }
+.paper-grid { background-image: linear-gradient(hsl(38 21% 78% / .23) 1px, transparent 1px), linear-gradient(90deg, hsl(38 21% 78% / .16) 1px, transparent 1px); background-size: 24px 24px; }
+.ink-shadow { box-shadow: 4px 4px 0 hsl(211 30% 18% / .08); } .paper-rule { border-top: 1px solid hsl(var(--border)); }
+.scan-line { animation: scan 2.6s ease-in-out infinite; } @keyframes scan { 0%,100% { transform: translateY(-8px); opacity: .15; } 45% { opacity: .8; } 65% { transform: translateY(170px); opacity: .8; } }
+.reveal { animation: reveal .45s ease-out both; } @keyframes reveal { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.leaflet-container { font-family: var(--app-font-sans); background: #dbe1d5; }
+.leaflet-control-zoom a { color: #214f4e !important; }
+@media (max-width: 767px) { .desktop-only { display:none; } } @media (min-width: 768px) { .mobile-only { display:none; } }

@@ -1,0 +1,671 @@
+--------------------------------------------------
+52. OPENSTREETMAP + LEAFLET LAND LOCATION MAPPING
+--------------------------------------------------
+
+Add an interactive land-location map to BhuVerify using:
+
+- Leaflet
+- React-Leaflet if using React
+- OpenStreetMap tiles
+
+Use the official OpenStreetMap tile layer:
+
+https://tile.openstreetmap.org/{z}/{x}/{y}.png
+
+Include the required OpenStreetMap attribution:
+
+© OpenStreetMap contributors
+
+Use Leaflet for:
+- map rendering
+- zoom
+- pan
+- markers
+- popups
+- polygons
+- parcel highlighting
+- location navigation
+
+IMPORTANT:
+The map must be integrated into the land-record verification workflow.
+
+Do NOT create a random standalone map page.
+
+The location shown on the map must originate from the land record's extracted/reference location information.
+
+--------------------------------------------------
+53. DOCUMENT → LOCATION → MAP WORKFLOW
+--------------------------------------------------
+
+Implement this workflow:
+
+LAND DOCUMENT
+      ↓
+OCR / AI EXTRACTION
+      ↓
+Extract location information
+      ↓
+State
+District
+Tehsil/Block
+Village
+Khasra / Dag / Plot Number
+      ↓
+Location Resolution
+      ↓
+Reference GIS / Demo Cadastral Dataset
+      ↓
+Find matching parcel
+      ↓
+OPENSTREETMAP + LEAFLET
+      ↓
+Show parcel/land location
+      ↓
+Marker + parcel boundary
+      ↓
+Land Record Information Popup
+
+Example:
+
+Uploaded document:
+
+State:
+West Bengal
+
+District:
+Example District
+
+Village:
+Rampur
+
+Dag No:
+125/2
+
+      ↓
+
+BhuVerify searches its available reference/demo
+cadastral data for:
+
+West Bengal
+→ Example District
+→ Rampur
+→ Dag 125/2
+
+      ↓
+
+Matching parcel found
+
+      ↓
+
+Map automatically moves to the parcel.
+
+--------------------------------------------------
+54. MAP INITIALIZATION
+--------------------------------------------------
+
+Use a Leaflet map similar to:
+
+const map = L.map('map').setView([LATITUDE, LONGITUDE], 13);
+
+L.tileLayer(
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }
+).addTo(map);
+
+Do not use a hard-coded London location such as:
+
+[51.505, -0.09]
+
+That is only an example.
+
+The actual center should be dynamically determined from the
+resolved land-record location.
+
+If the parcel cannot be resolved, use the selected
+village/district location if available and clearly display:
+
+"Parcel boundary unavailable — showing reference location."
+
+--------------------------------------------------
+55. DYNAMIC LAND MARKER
+--------------------------------------------------
+
+When a document is successfully matched to a parcel/location,
+place a marker on the map.
+
+Example:
+
+L.marker([latitude, longitude])
+  .addTo(map)
+  .bindPopup(...)
+  .openPopup();
+
+The marker popup should contain:
+
+BHUVErIFY LAND RECORD
+
+Owner:
+Ram Kumar
+
+State:
+West Bengal
+
+District:
+Example District
+
+Village:
+Rampur
+
+Dag No:
+125/2
+
+Recorded Area:
+2.50 acres
+
+Reference GIS Area:
+2.13 acres
+
+Status:
+⚠ Needs Verification
+
+The popup should provide:
+
+[View Record]
+
+Clicking "View Record" should open the corresponding
+BhuVerify record/case.
+
+--------------------------------------------------
+56. PARCEL BOUNDARY
+--------------------------------------------------
+
+Do not show only a point marker.
+
+If a demo/reference parcel polygon exists, draw its boundary
+using Leaflet GeoJSON/polygon support.
+
+Example concept:
+
+              PARCEL 125/2
+
+          ┌──────────────────┐
+         /                    \
+        /      SELECTED        \
+       /       PARCEL           \
+       \       125/2            /
+        \                      /
+         └────────────────────┘
+
+Highlight the selected parcel.
+
+Display:
+
+Parcel ID
+Khasra/Dag/Plot number
+Reference area
+Owner reference
+Verification status
+
+The selected parcel should visually stand out from surrounding
+demo parcels.
+
+--------------------------------------------------
+57. SURROUNDING PARCELS
+--------------------------------------------------
+
+Where demo GeoJSON data exists, display neighboring parcels.
+
+Example:
+
+┌─────────┬──────────┬──────────┐
+│ 124/1   │ 124/2    │ 125/1    │
+├─────────┼──────────┼──────────┤
+│ 125/2 ★ │ 125/3    │ 126/1    │
+├─────────┼──────────┼──────────┤
+│ 126/2   │ 127/1    │ 127/2    │
+└─────────┴──────────┴──────────┘
+
+The target parcel should be clearly highlighted.
+
+Clicking any parcel should show a popup containing its
+available demo/reference information.
+
+--------------------------------------------------
+58. AUTOMATIC MAP FOCUS
+--------------------------------------------------
+
+When the user reaches the GIS section after document extraction:
+
+1. Read the extracted location.
+2. Resolve it against the demo/reference GIS dataset.
+3. If a matching parcel exists:
+   - center the map
+   - zoom to the parcel
+   - display marker
+   - display parcel boundary
+   - open the parcel information panel
+
+The map should feel like:
+
+"AI found the land described in the document."
+
+Do not make the user manually search for the parcel again
+when the system already has a successful match.
+
+--------------------------------------------------
+59. DOCUMENT + MAP SPLIT VIEW
+--------------------------------------------------
+
+Create a powerful verification layout:
+
+┌─────────────────────────┬────────────────────────────┐
+│ LAND DOCUMENT           │ LAND LOCATION              │
+│                         │                            │
+│ [Document Preview]      │ [Leaflet Map]              │
+│                         │                            │
+│ Owner: Ram Kumar        │       ★ 125/2              │
+│ Dag: 125/2              │      /──────\              │
+│ Area: 2.50 acres        │     / PARCEL \             │
+│ Village: Rampur         │    /  125/2   \            │
+│                         │    ────────────             │
+└─────────────────────────┴────────────────────────────┘
+
+Above the map display:
+
+"Location resolved from land-record information"
+
+or:
+
+"Reference location — parcel boundary unavailable"
+
+depending on the result.
+
+--------------------------------------------------
+60. LOCATION RESOLUTION STATES
+--------------------------------------------------
+
+Handle three scenarios.
+
+CASE 1 — EXACT DEMO PARCEL MATCH
+
+✓ Parcel located
+
+"Matching reference parcel found for Dag/Khasra 125/2."
+
+Show:
+- marker
+- polygon
+- parcel information
+
+CASE 2 — LOCATION FOUND, PARCEL NOT FOUND
+
+⚠ Location identified
+
+"Village/district location found, but the specific parcel
+could not be matched in the available reference dataset."
+
+Show:
+- approximate/reference location
+- no false parcel boundary
+
+CASE 3 — LOCATION CANNOT BE RESOLVED
+
+⚠ Location unavailable
+
+"Insufficient location information to locate this record."
+
+Show:
+- extracted location fields
+- missing fields
+- manual search option
+
+NEVER invent coordinates for a parcel.
+
+--------------------------------------------------
+61. MANUAL MAP SEARCH
+--------------------------------------------------
+
+Also provide a manual search option.
+
+Fields:
+
+State
+[ West Bengal ▼ ]
+
+District
+[ Example District ▼ ]
+
+Village
+[ Rampur ▼ ]
+
+Dag / Khasra / Plot
+[ 125/2 ]
+
+[ Locate Parcel ]
+
+This should search the demo/reference cadastral dataset.
+
+If found:
+
+"Parcel located"
+
+If not:
+
+"Parcel not found in available reference data."
+
+--------------------------------------------------
+62. MAP ↔ RECORD SYNCHRONIZATION
+--------------------------------------------------
+
+The map and record details must stay synchronized.
+
+When a parcel is selected:
+
+Map
+  ↓
+Selected Parcel
+  ↓
+Record Details update
+
+When a record is selected:
+
+Record
+  ↓
+Matching Parcel
+  ↓
+Map automatically focuses on it
+
+This should work in both directions.
+
+--------------------------------------------------
+63. GIS AREA COMPARISON
+--------------------------------------------------
+
+When the selected parcel has reference geometry:
+
+Calculate/display:
+
+DOCUMENT
+2.50 acres
+
+REFERENCE GIS
+2.13 acres
+
+DIFFERENCE
+0.37 acres
+
+Then show:
+
+⚠ AREA DISCREPANCY
+
+"Document area differs from the available reference
+GIS area."
+
+IMPORTANT:
+
+Do not call this legally authoritative.
+
+Label the value:
+
+"Reference / calculated GIS area"
+
+The demo should make clear that this is a comparison signal
+for verification.
+
+--------------------------------------------------
+64. MAP LOCATION SOURCE
+--------------------------------------------------
+
+Every map result must indicate its source.
+
+Examples:
+
+Location source:
+"Reference cadastral dataset"
+
+or:
+
+Location source:
+"Geocoded village location"
+
+or:
+
+Location source:
+"Demo GIS dataset"
+
+Do not imply that OpenStreetMap itself contains official
+Indian cadastral/ownership records.
+
+OpenStreetMap provides the base map.
+
+BhuVerify's reference/demonstration GIS data provides
+the parcel information.
+
+--------------------------------------------------
+65. IMPORTANT: DO NOT MISREPRESENT OPENSTREETMAP
+--------------------------------------------------
+
+OpenStreetMap should be used only as the base geographic map.
+
+Do NOT claim:
+
+"OpenStreetMap verified the land ownership."
+
+Do NOT claim:
+
+"OpenStreetMap confirms the legal boundary."
+
+Instead say:
+
+"Map base: OpenStreetMap"
+
+"Parcel information: BhuVerify demo/reference cadastral data"
+
+"Ownership information: extracted/reference land records"
+
+This distinction must be visible in the UI.
+
+--------------------------------------------------
+66. MAP LEGEND
+--------------------------------------------------
+
+Add a small clean map legend:
+
+★ Selected Parcel
+○ Reference Parcel
+● Document Location
+⚠ Potential Discrepancy
+
+Keep the legend minimal.
+
+--------------------------------------------------
+67. MAP UX
+--------------------------------------------------
+
+Provide:
+
+- Zoom controls
+- Fullscreen map option
+- Reset to parcel button
+- Search
+- Parcel click interaction
+- Popup
+- Responsive layout
+
+On mobile, make the map height large enough to remain usable.
+
+Avoid covering the map with excessive UI.
+
+--------------------------------------------------
+68. DEMO DATA
+--------------------------------------------------
+
+Create fictional/demo cadastral GeoJSON data for the four
+initial states:
+
+- Assam
+- Bihar
+- Sikkim
+- West Bengal
+
+Use fictional locations/records for the prototype.
+
+Each demo parcel should contain:
+
+{
+  "parcel_id": "WB-RAMPUR-125-2",
+  "state": "West Bengal",
+  "district": "Example District",
+  "village": "Rampur",
+  "khasra_number": "125/2",
+  "dag_number": "125/2",
+  "area": 2.13,
+  "area_unit": "acre",
+  "owner_reference": "Ram Kumar",
+  "geometry": {...}
+}
+
+Clearly label the dataset:
+
+"DEMO / REFERENCE CADASTRAL DATA
+Not an official government land record."
+
+--------------------------------------------------
+69. DEMO WOW MOMENT
+--------------------------------------------------
+
+The main SIH demonstration should include this sequence:
+
+1. Upload a land document.
+2. OCR/AI extracts:
+   - Owner
+   - Village
+   - District
+   - State
+   - Khasra/Dag/Plot number
+   - Area
+3. Click "Locate Land".
+4. BhuVerify searches its reference GIS dataset.
+5. The map automatically moves to the matching parcel.
+6. The parcel boundary is highlighted.
+7. A marker appears.
+8. Popup displays the land-record summary.
+9. The system compares:
+   Document Area
+   vs
+   Reference GIS Area
+10. If different, show:
+   "Potential area discrepancy."
+11. User can open:
+   "View Verification"
+12. Continue to validation, anomaly detection and human review.
+
+The transition from document → map should feel seamless
+and should be one of the strongest moments of the demo.
+
+--------------------------------------------------
+70. TECHNICAL IMPLEMENTATION
+--------------------------------------------------
+
+If using React, prefer:
+
+react-leaflet
+
+with:
+
+MapContainer
+TileLayer
+Marker
+Popup
+GeoJSON
+Polygon
+useMap
+
+Create reusable components:
+
+LandMap
+ParcelLayer
+ParcelMarker
+ParcelPopup
+MapSearch
+MapLegend
+LocationResolver
+ParcelDetails
+
+Keep GIS data separate from UI components.
+
+Suggested structure:
+
+src/
+  components/
+    map/
+      LandMap.tsx
+      ParcelLayer.tsx
+      ParcelPopup.tsx
+      MapSearch.tsx
+      MapLegend.tsx
+
+  data/
+    cadastral/
+      assam.ts
+      bihar.ts
+      sikkim.ts
+      westBengal.ts
+
+  services/
+    locationResolver.ts
+    parcelService.ts
+
+Do not hard-code all map logic inside the dashboard.
+
+--------------------------------------------------
+71. OPTIONAL GEOCODING
+--------------------------------------------------
+
+If external geocoding is used, keep it behind a service abstraction.
+
+Possible architecture:
+
+LocationResolver
+       ↓
+Reference Parcel Search
+       ↓
+If unavailable
+       ↓
+Optional Geocoder
+       ↓
+Approximate location only
+
+Never use geocoding alone to claim that a particular
+Khasra/Dag/Plot belongs to a coordinate.
+
+A village/district geocode is only an approximate location.
+
+The exact parcel should come from available reference
+cadastral/parcel geometry.
+
+--------------------------------------------------
+72. MAP CREDITS
+--------------------------------------------------
+
+Display map attribution in the map itself.
+
+Use:
+
+© OpenStreetMap contributors
+
+Provide a small "Map & Data Sources" section explaining:
+
+Base map:
+OpenStreetMap
+
+Parcel/reference data:
+BhuVerify demo/reference cadastral dataset
+
+Document data:
+Uploaded/demo land records
+
+This should increase transparency and credibility.

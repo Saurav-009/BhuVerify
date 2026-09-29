@@ -1,0 +1,614 @@
+--------------------------------------------------
+37. GOVERNMENT OFFICIAL PORTAL
+--------------------------------------------------
+
+Create a separate access area called:
+
+"Official Portal"
+
+This is designed for authorized revenue/land-record officials.
+
+IMPORTANT:
+This is a hackathon prototype.
+
+Do NOT claim that this is connected to a real government authentication system.
+
+Use:
+
+"Demo Official Access"
+
+for the prototype.
+
+Create a separate login screen:
+
+┌──────────────────────────────────────┐
+│          OFFICIAL PORTAL             │
+│                                      │
+│  Revenue & Land Record Verification  │
+│                                      │
+│  Official ID                         │
+│  [________________________]          │
+│                                      │
+│  Password                            │
+│  [________________________]          │
+│                                      │
+│       [ Demo Official Login ]        │
+│                                      │
+│  Demo environment                    │
+└──────────────────────────────────────┘
+
+After login, redirect to:
+
+OFFICIAL DASHBOARD
+
+--------------------------------------------------
+38. OFFICIAL DASHBOARD
+--------------------------------------------------
+
+The official dashboard should provide a centralized view of cases and grievances.
+
+Show:
+
+Total Cases
+Pending Verification
+High-Risk Cases
+Potential Conflicts
+Open Grievances
+Resolved Grievances
+
+Example:
+
+127 Total Cases
+31 Pending
+7 Conflicts
+4 High Risk
+18 Open Concerns
+43 Resolved
+
+Create a priority queue:
+
+URGENT
+- Multiple ownership conflict
+- Potential document alteration
+- Major area discrepancy
+
+HIGH
+- Parcel mismatch
+- Missing registration information
+
+NORMAL
+- Low OCR confidence
+- Missing non-critical information
+
+--------------------------------------------------
+39. OFFICIAL CASE MANAGEMENT
+--------------------------------------------------
+
+Officials should be able to open any case.
+
+Case details should contain:
+
+Case ID
+Document
+Applicant/User
+State
+District
+Village
+Parcel Identifier
+Extracted Data
+OCR Confidence
+Validation Results
+GIS Results
+Anomaly Results
+Risk Score
+Evidence
+Previous Verification History
+
+Provide actions:
+
+✓ Approve
+⚠ Request Additional Information
+⚠ Send for Manual Verification
+✕ Reject
+
+Every action should create an audit-log entry.
+
+Example:
+
+AUDIT TRAIL
+
+09:42 — Document uploaded
+09:43 — OCR completed
+09:43 — Land entities extracted
+09:44 — Area discrepancy detected
+09:45 — Case assigned to Officer
+10:02 — Officer requested additional information
+
+--------------------------------------------------
+40. OFFICIAL GRIEVANCE MANAGEMENT
+--------------------------------------------------
+
+Create a dedicated:
+
+"Grievances & Concerns"
+
+section.
+
+Officials should be able to view all submitted concerns.
+
+Table:
+
+Grievance ID
+Date
+Applicant
+State
+District
+Village
+Parcel
+Concern Type
+Priority
+Status
+Assigned Officer
+
+Example:
+
+BV-GRV-001245
+Area discrepancy
+West Bengal
+Rampur
+Dag 125/2
+HIGH
+Under Review
+
+Filters:
+
+- State
+- District
+- Status
+- Priority
+- Concern Type
+- Date
+- Assigned Officer
+
+Search by:
+
+- Grievance ID
+- Owner/applicant name
+- Khasra/Dag/Plot number
+- Case ID
+
+--------------------------------------------------
+41. GRIEVANCE DETAIL PAGE
+--------------------------------------------------
+
+When an official opens a grievance, show:
+
+GRIEVANCE BV-GRV-001245
+
+Concern:
+Area discrepancy
+
+Applicant statement:
+"The area shown in my old land document differs from
+the current record."
+
+System findings:
+
+Document Area:
+2.50 acres
+
+Reference Area:
+2.13 acres
+
+Difference:
+0.37 acres
+
+Related Case:
+BV-2026-01482
+
+Evidence:
+✓ Uploaded document
+✓ OCR extraction
+✓ Validation comparison
+✓ GIS reference
+
+Official actions:
+
+[Accept Concern]
+[Request Information]
+[Forward]
+[Resolve]
+[Reject]
+
+Include:
+
+Officer Remarks
+Resolution Notes
+Supporting Documents
+Audit History
+
+--------------------------------------------------
+42. GRIEVANCE STATUS TRACKING
+--------------------------------------------------
+
+Citizens/users should be able to track their complaint.
+
+Example:
+
+BV-GRV-001245
+
+SUBMITTED
+    ↓
+UNDER REVIEW
+    ↓
+ADDITIONAL INFORMATION REQUIRED
+    ↓
+RESOLVED
+
+Show the current status clearly.
+
+Possible statuses:
+
+Submitted
+Acknowledged
+Under Review
+Information Required
+Forwarded
+Resolved
+Closed
+Rejected
+
+Generate a demo grievance ID automatically.
+
+--------------------------------------------------
+43. OFFICIAL ROLE-BASED ACCESS
+--------------------------------------------------
+
+Create basic demo roles:
+
+1. Citizen/User
+2. Verification Officer
+3. Senior Officer
+4. Administrator
+
+For the prototype, permissions can be simulated.
+
+Citizen:
+- Upload documents
+- View own records
+- View own grievances
+- Use AI assistant
+
+Verification Officer:
+- Review assigned cases
+- Review grievances
+- Validate records
+- Add remarks
+
+Senior Officer:
+- Review escalated/high-risk cases
+- View department-level statistics
+- Approve/reject escalated cases
+
+Administrator:
+- View all cases
+- Manage users
+- Manage demo state configurations
+- View audit logs
+
+Clearly label this as:
+
+"Prototype Role-Based Access Control"
+
+unless a real authentication provider is implemented.
+
+--------------------------------------------------
+44. GOVERNMENT PORTAL DIRECTORY
+--------------------------------------------------
+
+Create a page/section:
+
+"Government Services"
+
+This should NOT pretend that BhuVerify itself is the official government portal.
+
+Instead, provide useful links to relevant official government services.
+
+Organize by state:
+
+ASSAM
+Bihar
+Sikkim
+West Bengal
+
+For each state, allow configurable links for:
+
+- Land Records
+- Registration
+- Mutation
+- Revenue Department
+- Grievance Portal
+- Citizen Services
+- Cadastral/GIS services where publicly available
+
+Example UI:
+
+GOVERNMENT SERVICES
+
+West Bengal
+
+Land Records
+View official land-record services
+[Open Official Portal →]
+
+Registration
+Access official registration services
+[Open Official Portal →]
+
+Grievance
+Submit a complaint through the official government portal
+[Open Official Portal →]
+
+IMPORTANT:
+
+Do not invent government URLs.
+
+Keep these links in a configuration file/database so they can easily be replaced with verified official URLs.
+
+Every external government link should clearly display:
+
+"External official website"
+
+and open in a new tab.
+
+BhuVerify should never imply that a user has submitted a complaint to the government merely by clicking an external link.
+
+--------------------------------------------------
+45. SMART GRIEVANCE ROUTING
+--------------------------------------------------
+
+When a user raises a concern, determine the appropriate category:
+
+- Land Record Error
+- Ownership Conflict
+- Mutation Issue
+- Area Discrepancy
+- Boundary Issue
+- Missing Record
+- Registration Issue
+- Document Concern
+- Other
+
+Then show:
+
+RECOMMENDED NEXT STEP
+
+Example:
+
+Detected issue:
+Land-record area discrepancy
+
+BhuVerify action:
+Create grievance draft
+
+Recommended authority:
+State land/revenue authority
+
+Official portal:
+[Open Official Portal →]
+
+Also provide:
+
+[Create BhuVerify Grievance]
+
+[Go to Official Government Portal]
+
+These are two separate actions.
+
+--------------------------------------------------
+46. AI-GENERATED GRIEVANCE DRAFT
+--------------------------------------------------
+
+Use Gemini to help draft the grievance.
+
+The AI should use only verified case information.
+
+Example:
+
+GRIEVANCE DRAFT
+
+Subject:
+Request for verification of area discrepancy for
+Dag No. 125/2
+
+Details:
+The uploaded land record lists an area of 2.50 acres,
+while the available reference record lists approximately
+2.13 acres.
+
+The system detected this discrepancy during automated
+validation.
+
+Supporting evidence:
+- Uploaded document
+- Extracted land record
+- Validation report
+- Reference parcel information
+
+IMPORTANT:
+
+The AI must not make legal accusations.
+
+Avoid:
+"This document is fraudulent."
+
+Prefer:
+"The system detected indicators requiring manual verification."
+
+Allow the user/official to edit the AI-generated draft before submission.
+
+--------------------------------------------------
+47. GOVERNMENT OFFICIAL NOTIFICATIONS
+--------------------------------------------------
+
+Create a notification center.
+
+Examples:
+
+⚠ High-risk case assigned to you
+⚠ New grievance received
+⚠ Additional information submitted
+✓ Grievance resolved
+⚠ Case requires senior review
+
+Use mock notifications in demo mode.
+
+--------------------------------------------------
+48. OFFICIAL ANALYTICS
+--------------------------------------------------
+
+Create an analytics section for officials.
+
+Show:
+
+Cases by State
+Cases by Status
+Cases by Risk
+Common Discrepancy Types
+Average Verification Time
+Grievances by Category
+Resolved vs Pending
+
+Allow filtering by:
+
+State
+District
+Date range
+
+Use clean charts.
+
+Do not overload the dashboard with unnecessary visualizations.
+
+--------------------------------------------------
+49. COMPLETE USER ↔ OFFICIAL LOOP
+--------------------------------------------------
+
+The application should demonstrate a complete two-sided workflow:
+
+CITIZEN / USER
+
+Upload document
+      ↓
+AI extraction
+      ↓
+Validation
+      ↓
+GIS verification
+      ↓
+Discrepancy detected
+      ↓
+Raise Concern
+      ↓
+AI prepares grievance
+      ↓
+User reviews
+      ↓
+Grievance submitted
+      ↓
+Grievance ID generated
+
+                    ↓
+
+              OFFICIAL PORTAL
+
+              New Grievance
+                    ↓
+              Officer Review
+                    ↓
+          Examine Evidence
+                    ↓
+        Request Information
+             OR Approve
+             OR Resolve
+             OR Forward
+                    ↓
+              Audit Trail
+
+                    ↓
+
+              USER PORTAL
+
+          Status Updated
+                    ↓
+             User notified
+                    ↓
+              Resolution
+
+This end-to-end loop should be one of the main demonstration flows of the application.
+
+--------------------------------------------------
+50. FINAL PRODUCT POSITIONING
+--------------------------------------------------
+
+The final BhuVerify experience should communicate:
+
+DOCUMENT
+    +
+AI
+    +
+LAND DATA
+    +
+GIS
+    +
+VALIDATION
+    +
+HUMAN REVIEW
+    +
+GRIEVANCE
+
+BhuVerify is NOT:
+
+- just OCR
+- just a chatbot
+- just a GIS map
+- just a fraud detector
+- just a grievance portal
+
+It is an integrated land-record intelligence and verification workflow.
+
+The central principle is:
+
+"AI assists the official. Evidence supports the decision. Humans remain responsible for verification."
+
+--------------------------------------------------
+51. IMPORTANT TRUST & SAFETY UX
+--------------------------------------------------
+
+Throughout the application, clearly distinguish:
+
+EXTRACTED
+Information read from uploaded documents.
+
+REFERENCE
+Information obtained from demo/reference databases or GIS.
+
+SYSTEM FINDING
+A result generated by deterministic validation/anomaly rules.
+
+AI EXPLANATION
+An explanation generated by the AI assistant.
+
+HUMAN VERIFIED
+A decision explicitly confirmed by an authorized demo official.
+
+Never merge these into one category called "Truth."
+
+Use labels such as:
+
+"Document says..."
+"Reference data shows..."
+"System detected..."
+"AI explanation..."
+"Human verification..."
+
+This distinction is a major part of the product's credibility.

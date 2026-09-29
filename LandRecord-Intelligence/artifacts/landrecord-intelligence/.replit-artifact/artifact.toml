@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "LandRecord Intelligence"
+description = "A government-grade land record digitization and validation workspace for SIH26018, with a fully interactive demo pipeline from document intake through GIS checks, risk analysis, and officer decision."
+version = "1.0.0"
+id = "artifacts/landrecord-intelligence"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23370
+
+[services.development]
+run = "pnpm --filter @workspace/landrecord-intelligence run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/landrecord-intelligence", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/landrecord-intelligence/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23370"
+BASE_PATH = "/"
