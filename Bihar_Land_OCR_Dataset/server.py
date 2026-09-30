@@ -167,12 +167,91 @@ async def analyze_land_record(file: UploadFile = File(...)):
             full_text = ocr_res.get("full_text", "")
             image_paths = [temp_file_path]
 
-        # 2. Structured Extraction via Gemini (with fallback to local rules)
+        # 1.5 Document Content Classification Gate (BEFORE normal land-record extraction)
+        import re as _re
+        land_keywords = [
+            r'जमाबंदी', r'जमाबी', r'रैयत', r'खाता', r'खेसरा', r'मौजा', r'अंचल', r'हलका',
+            r'राजस्व', r'भूमि\s*सुधार', r'रकबा', r'दाखिल', r'खारिज', r'लगान',
+            r'jamabandi', r'raiyat', r'khata', r'khesra', r'mauza', r'mauja',
+            r'anchal', r'halka', r'bhu[\s\-]?abhilekh', r'khatian', r'patta', r'mutation',
+            r'21\d{13}'
+        ]
+        matched_kw = [kw for kw in land_keywords if _re.search(kw, full_text, _re.IGNORECASE)]
+        kw_count = len(matched_kw)
+
+        # Also check if we can extract any core land fields
         fields_data = extract_with_gemini(
             text=full_text,
             image_paths=image_paths,
             document_id=doc_id
         )
+        core_keys = ["raiyat_name", "computerized_jamabandi_number", "jamabandi_number", "khata_number", "khesra_plot_number", "land_area", "mauja"]
+        populated_core = [k for k in core_keys if fields_data.get(k, {}).get("normalized") or fields_data.get(k, {}).get("original")]
+
+        if kw_count >= 2 or len(populated_core) >= 2:
+            doc_classification = "LAND_RECORD"
+            doc_class_conf = min(0.98, 0.65 + 0.06 * (kw_count + len(populated_core)))
+            doc_class_reason = f"Verified land record structure ({kw_count} revenue indicators and {len(populated_core)} core registry attributes detected)."
+        elif kw_count == 1 or len(populated_core) == 1:
+            doc_classification = "UNCERTAIN"
+            doc_class_conf = 0.50
+            doc_class_reason = "Document type could not be verified with high confidence — partial revenue indicators found. Marked for human officer review."
+        else:
+            doc_classification = "NON_LAND_DOCUMENT"
+            doc_class_conf = 0.88
+            doc_class_reason = "The uploaded file does not appear to contain a compatible land-record document. No Jamabandi, Khata, Khesra, Raiyat, or revenue department markers were found in the document content."
+
+        # If NON_LAND_DOCUMENT: do NOT populate owner/parcel fields, do NOT run normal GIS/risk processing
+        if doc_classification == "NON_LAND_DOCUMENT":
+            empty_fields = {
+                k: {"original": None, "normalized": None, "confidence": 0.0, "evidence": []}
+                for k in [
+                    "raiyat_name", "father_or_husband_name", "computerized_jamabandi_number",
+                    "jamabandi_number", "bhag_vartaman", "prishth_sankhya", "district",
+                    "anchal", "halka", "mauja", "khata_number", "khesra_plot_number",
+                    "land_area", "mutation_status"
+                ]
+            }
+            preview_urls = [f"/static/previews/{p.name}" for p in image_paths if p.exists()]
+            return {
+                "document_id": doc_id,
+                "file_name": file.filename,
+                "ocr_path_used": ocr_path_used,
+                "page_count": page_count,
+                "overall_confidence": 0.0,
+                "status": "REVIEW_REQUIRED",
+                "document_classification": doc_classification,
+                "document_classification_confidence": doc_class_conf,
+                "document_classification_reason": doc_class_reason,
+                "fields": empty_fields,
+                "matches": {},
+                "matched_reference_record": {},
+                "risk_analysis": {
+                    "risk_score": 0,
+                    "risk_level": "LOW",
+                    "status_text": "Document not recognized as a land record",
+                    "color": "slate",
+                    "factors_count": 0,
+                    "factors": []
+                },
+                "gis_parcel": {
+                    "plot_number": "",
+                    "khata_number": "",
+                    "mauza": "",
+                    "anchal": "",
+                    "district": "",
+                    "state": "",
+                    "center": [25.5642, 85.1824],
+                    "boundary_polygon": [],
+                    "area_acres": "",
+                    "is_simulated_cadastral": True
+                },
+                "preview_urls": preview_urls,
+                "ocr_text_length": len(full_text),
+                "ocr_text_sample": full_text[:300] if full_text else "",
+                "detected_state": None,
+                "portal_verification": None,
+            }
 
         # 3. Ground Truth Reference Matching
         ref_record = {}
@@ -210,10 +289,10 @@ async def analyze_land_record(file: UploadFile = File(...)):
                 "original": v.get("original"),
                 "normalized": v.get("normalized"),
                 "corrected": v.get("normalized") or v.get("original"),
-                "confidence": v.get("confidence", 0.85)
+                "confidence": v.get("confidence", 0.0)
             }
 
-        match_res = match_extracted_to_reference(mock_ext_res, ref_record)
+        match_res = match_extracted_to_reference(mock_ext_res, ref_record) if ref_record else {"field_scores": {}, "overall_confidence": 0.0}
 
         # Build clean matches dictionary
         clean_matches = {}
@@ -228,8 +307,8 @@ async def analyze_land_record(file: UploadFile = File(...)):
             }
 
         # 4. Confidence & Risk Assessment
-        conf_list = [v.get("confidence", 0.8) for v in fields_data.values() if v.get("confidence") is not None]
-        overall_conf = round(sum(conf_list) / len(conf_list), 3) if conf_list else 0.80
+        conf_list = [v.get("confidence", 0.0) for v in fields_data.values() if (v.get("original") or v.get("normalized")) and v.get("confidence") is not None]
+        overall_conf = round(sum(conf_list) / max(1, len(fields_data)), 3) if conf_list else 0.0
 
         risk_data = calculate_land_record_risk(
             fields=fields_data,
@@ -238,22 +317,26 @@ async def analyze_land_record(file: UploadFile = File(...)):
         )
 
         # Overall Status
-        if risk_data["risk_level"] == "LOW" and (not ref_record or match_res.get("overall_confidence", 0.8) > 0.8):
+        if doc_classification == "UNCERTAIN":
+            overall_status = "REVIEW_REQUIRED"
+        elif risk_data["risk_level"] == "LOW" and ref_record and match_res.get("overall_confidence", 0.0) > 0.8:
             overall_status = "VERIFIED"
         elif risk_data["risk_level"] == "HIGH":
             overall_status = "DISCREPANCY_FLAGGED"
         else:
             overall_status = "REVIEW_REQUIRED"
 
-        # 5. GIS Cadastral Parcel Projection (Sampatchak, Patna)
-        khata_val = fields_data.get("khata_number", {}).get("normalized") or "14"
-        khesra_val = fields_data.get("khesra_plot_number", {}).get("normalized") or "108"
-        mauza_val = fields_data.get("mauja", {}).get("normalized") or "Karnpura-121"
+        # 5. GIS Cadastral Parcel Projection (Never fabricate defaults if not extracted)
+        khata_val = fields_data.get("khata_number", {}).get("normalized") or ""
+        khesra_val = fields_data.get("khesra_plot_number", {}).get("normalized") or ""
+        mauza_val = fields_data.get("mauja", {}).get("normalized") or ""
+        anchal_val = fields_data.get("anchal", {}).get("normalized") or ""
+        district_val = fields_data.get("district", {}).get("normalized") or ""
         
         # Base coordinates for Sampatchak / Patna region
         base_lat = 25.5642
         base_lng = 85.1824
-        plot_seed = sum(ord(c) for c in str(khesra_val)) % 100
+        plot_seed = sum(ord(c) for c in str(khesra_val)) % 100 if khesra_val else 0
         lat_offset = (plot_seed % 10) * 0.0012
         lng_offset = (plot_seed // 10) * 0.0015
         
@@ -261,17 +344,17 @@ async def analyze_land_record(file: UploadFile = File(...)):
             "plot_number": str(khesra_val),
             "khata_number": str(khata_val),
             "mauza": str(mauza_val),
-            "anchal": "Sampatchak",
-            "district": "Patna",
-            "state": "Bihar",
+            "anchal": str(anchal_val),
+            "district": str(district_val),
+            "state": "Bihar" if district_val else "",
             "center": [base_lat + lat_offset, base_lng + lng_offset],
             "boundary_polygon": [
                 [base_lat + lat_offset, base_lng + lng_offset],
                 [base_lat + lat_offset + 0.0008, base_lng + lng_offset],
                 [base_lat + lat_offset + 0.0008, base_lng + lng_offset + 0.0011],
                 [base_lat + lat_offset, base_lng + lng_offset + 0.0011],
-            ],
-            "area_acres": fields_data.get("land_area", {}).get("normalized") or "0.125 Acres",
+            ] if khesra_val else [],
+            "area_acres": fields_data.get("land_area", {}).get("normalized") or "",
             "is_simulated_cadastral": True
         }
 
@@ -285,7 +368,7 @@ async def analyze_land_record(file: UploadFile = File(...)):
         }
         detected_state = detect_state(flat_extracted, ocr_text=full_text)
         portal_verification = None
-        if detected_state:
+        if detected_state and doc_classification == "LAND_RECORD":
             try:
                 connector = get_portal_connector(detected_state)
                 pv_result = connector.verify(flat_extracted)
@@ -300,6 +383,9 @@ async def analyze_land_record(file: UploadFile = File(...)):
             "page_count": page_count,
             "overall_confidence": overall_conf,
             "status": overall_status,
+            "document_classification": doc_classification,
+            "document_classification_confidence": doc_class_conf,
+            "document_classification_reason": doc_class_reason,
             "fields": fields_data,
             "matches": clean_matches,
             "matched_reference_record": ref_record,

@@ -353,55 +353,55 @@ export function ValidationPage() {
   const matches = analysis.matches || {};
   const refRecord = analysis.matched_reference_record || {};
   const f = analysis.fields;
+  const hasDocument = Boolean(analysis.document_id);
 
-  // Build comparison rows from matches
   const comparisonRows = [
     {
       field: 'Computerized Jamabandi ID',
-      extracted: f.computerized_jamabandi_number?.normalized || f.computerized_jamabandi_number?.original || '211500100010001',
-      database: refRecord.computerized_jamabandi_number || matches.computerized_jamabandi_number?.reference || '211500100010001',
-      score: matches.computerized_jamabandi_number?.score ?? 1.0,
-      status: matches.computerized_jamabandi_number?.status || 'MATCH',
+      extracted: f.computerized_jamabandi_number?.normalized || f.computerized_jamabandi_number?.original || null,
+      database: refRecord.computerized_jamabandi_number || matches.computerized_jamabandi_number?.reference || null,
+      score: matches.computerized_jamabandi_number?.score ?? null,
+      status: matches.computerized_jamabandi_number?.status || null,
       note: '15-digit DoLR statewide unique identifier'
     },
     {
       field: 'Jamabandi Number',
-      extracted: f.jamabandi_number?.normalized || f.jamabandi_number?.original || '1',
-      database: refRecord.jamabandi_number || matches.jamabandi_number?.reference || '1',
-      score: matches.jamabandi_number?.score ?? 1.0,
-      status: matches.jamabandi_number?.status || 'MATCH',
+      extracted: f.jamabandi_number?.normalized || f.jamabandi_number?.original || null,
+      database: refRecord.jamabandi_number || matches.jamabandi_number?.reference || null,
+      score: matches.jamabandi_number?.score ?? null,
+      status: matches.jamabandi_number?.status || null,
       note: 'Revenue Panji II register serial'
     },
     {
       field: 'Khata Number (Account)',
-      extracted: f.khata_number?.normalized || f.khata_number?.original || '14',
-      database: refRecord.khata_number || matches.khata_number?.reference || '14',
-      score: matches.khata_number?.score ?? 1.0,
-      status: matches.khata_number?.status || 'MATCH',
+      extracted: f.khata_number?.normalized || f.khata_number?.original || null,
+      database: refRecord.khata_number || matches.khata_number?.reference || null,
+      score: matches.khata_number?.score ?? null,
+      status: matches.khata_number?.status || null,
       note: 'Ledger account number'
     },
     {
       field: 'Khesra / Plot Number',
-      extracted: f.khesra_plot_number?.normalized || f.khesra_plot_number?.original || '108',
-      database: refRecord.khesra_plot_number || matches.khesra_plot_number?.reference || '108',
-      score: matches.khesra_plot_number?.score ?? 1.0,
-      status: matches.khesra_plot_number?.status || 'MATCH',
+      extracted: f.khesra_plot_number?.normalized || f.khesra_plot_number?.original || null,
+      database: refRecord.khesra_plot_number || matches.khesra_plot_number?.reference || null,
+      score: matches.khesra_plot_number?.score ?? null,
+      status: matches.khesra_plot_number?.status || null,
       note: 'Cadastral revenue map plot'
     },
     {
       field: 'Raiyat (Owner) Name',
-      extracted: f.raiyat_name?.normalized || f.raiyat_name?.original || 'श्रीमती कान्ती देवी',
-      database: refRecord.raiyat_name || matches.raiyat_name?.reference || 'श्रीमती कान्ती देवी',
-      score: matches.raiyat_name?.score ?? 0.95,
-      status: matches.raiyat_name?.status || 'MATCH',
+      extracted: f.raiyat_name?.normalized || f.raiyat_name?.original || null,
+      database: refRecord.raiyat_name || matches.raiyat_name?.reference || null,
+      score: matches.raiyat_name?.score ?? null,
+      status: matches.raiyat_name?.status || null,
       note: 'Fuzzy string & token alignment'
     },
     {
       field: 'Village / Mauza',
-      extracted: f.mauza?.normalized || f.mauza?.original || 'Karnpura-121',
-      database: refRecord.mauja || matches.mauja?.reference || 'Karnpura-121',
-      score: matches.mauja?.score ?? 1.0,
-      status: matches.mauja?.status || 'MATCH',
+      extracted: f.mauza?.normalized || f.mauza?.original || f.mauja?.normalized || f.mauja?.original || null,
+      database: refRecord.mauja || matches.mauja?.reference || null,
+      score: matches.mauja?.score ?? null,
+      status: matches.mauja?.status || null,
       note: 'Revenue jurisdiction code'
     }
   ];
@@ -414,9 +414,19 @@ export function ValidationPage() {
       <PageHead eyebrow="Registry Cross-Validation / Step 04" title="Validate Against Bihar Land Registry">
         <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
           <Database className="w-3.5 h-3.5" />
-          <span>Department Ground Truth: {refRecord.document_id || 'Official Bihar Dataset'}</span>
+          <span>Department Ground Truth: {refRecord.document_id || (hasDocument ? 'Matched Reference Record' : 'No document processed')}</span>
         </div>
       </PageHead>
+
+      {!hasDocument && (
+        <div className="mb-6 p-5 rounded-lg bg-amber-50 border border-amber-300 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-amber-800">No document has been processed yet</p>
+            <p className="text-sm text-amber-700 mt-1">Upload a Jamabandi document first, then return here to see the cross-validation against the Bihar Department database.</p>
+          </div>
+        </div>
+      )}
 
       {/* Comparison Table */}
       <Panel className="overflow-hidden">
@@ -444,7 +454,7 @@ export function ValidationPage() {
               </div>
 
               <div className={isMismatch ? 'text-red-600 dark:text-red-400 font-bold' : 'font-medium text-slate-800 dark:text-slate-200'}>
-                {row.extracted || '—'}
+                {row.extracted || <span className="text-slate-400 italic text-xs">Not detected</span>}
               </div>
 
               <div className="text-slate-700 dark:text-slate-300">
@@ -452,13 +462,15 @@ export function ValidationPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                {row.status === 'MATCH' ? (
+                {!row.status ? (
+                  <span className="text-xs text-slate-400 italic">No data</span>
+                ) : row.status === 'MATCH' ? (
                   <StatusBadge tone="good">
-                    <Check className="w-3 h-3 mr-1" /> Match ({Math.round(row.score * 100)}%)
+                    <Check className="w-3 h-3 mr-1" /> Match{row.score != null ? ` (${Math.round(row.score * 100)}%)` : ''}
                   </StatusBadge>
                 ) : isPartial ? (
                   <StatusBadge tone="warn">
-                    <AlertTriangle className="w-3 h-3 mr-1" /> Partial ({Math.round(row.score * 100)}%)
+                    <AlertTriangle className="w-3 h-3 mr-1" /> Partial{row.score != null ? ` (${Math.round(row.score * 100)}%)` : ''}
                   </StatusBadge>
                 ) : (
                   <StatusBadge tone="danger">

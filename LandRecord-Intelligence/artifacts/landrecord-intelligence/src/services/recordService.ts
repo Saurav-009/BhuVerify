@@ -162,20 +162,66 @@ const demoService: StateService = {
   getCases: async () => readState().cases.map(cloneCase),
   getCase: async (id) => {
     const officialCase = readState().cases.find((item) => item.id === id);
-    return officialCase ? cloneCase(officialCase) : undefined;
+    if (officialCase) return cloneCase(officialCase);
+    return {
+      id,
+      owner: 'Active Case Applicant',
+      village: 'Bihar Jurisdiction',
+      risk: 18,
+      status: 'Officer Review',
+      priority: 'Normal',
+      auditTrail: [
+        `${auditTimestamp()} — Document received · System`,
+        `${auditTimestamp()} — Queued for human officer review · Decision support`,
+      ],
+    };
   },
   saveOfficerDecision: async (id, decision) => {
     const state = readState();
-    const existing = state.cases.find((officialCase) => officialCase.id === id);
-    if (!existing) throw new Error(`Case ${id} was not found`);
+    let existing = state.cases.find((officialCase) => officialCase.id === id);
     const timestamp = auditTimestamp();
+    if (!existing) {
+      existing = {
+        id,
+        owner: 'Active Case Applicant',
+        village: 'Bihar Jurisdiction',
+        risk: 18,
+        status: 'Officer Review',
+        priority: 'Normal',
+        auditTrail: [`${timestamp} — Case initialized in Officer Decision workspace · System`],
+      };
+    }
     const savedDecision: OfficerDecision = { ...decision, timestamp, officer: DEMO_OFFICER };
-    const event = decision.action === 'verify' ? 'Record verified' : decision.action === 'return' ? 'Returned for correction' : 'Escalated to senior officer';
-    const updated: OfficialCase = {
-      ...existing, status: decision.action === 'verify' ? 'Verified' : decision.action === 'return' ? 'Correction requested' : 'Senior officer review',
-      decision: savedDecision, auditTrail: [...existing.auditTrail, `${timestamp} — ${event} · ${DEMO_OFFICER}`, `${timestamp} — Officer remarks: ${decision.remarks}`],
+    const eventMap: Record<OfficerDecision['action'], string> = {
+      verify: 'Record verified',
+      return: 'Clarification requested',
+      grievance: 'Grievance raised for field inquiry',
+      reject: 'Rejected / Flagged for discrepancy',
+      escalate: 'Escalated to senior officer',
     };
-    writeState({ ...state, cases: state.cases.map((officialCase) => officialCase.id === id ? updated : officialCase) });
+    const statusMap: Record<OfficerDecision['action'], string> = {
+      verify: 'Verified',
+      return: 'Clarification Requested',
+      grievance: 'Grievance Raised',
+      reject: 'Flagged / Rejected',
+      escalate: 'Senior Officer Review',
+    };
+    const event = eventMap[decision.action] || 'Officer decision recorded';
+    const updated: OfficialCase = {
+      ...existing,
+      status: statusMap[decision.action] || 'Officer Review',
+      decision: savedDecision,
+      auditTrail: [
+        ...existing.auditTrail,
+        `${timestamp} — ${event} · ${DEMO_OFFICER}`,
+        `${timestamp} — Officer remarks: ${decision.remarks}`,
+      ],
+    };
+    const caseExists = state.cases.some((c) => c.id === id);
+    const updatedCases = caseExists
+      ? state.cases.map((officialCase) => (officialCase.id === id ? updated : officialCase))
+      : [updated, ...state.cases];
+    writeState({ ...state, cases: updatedCases });
     return cloneCase(updated);
   },
 };

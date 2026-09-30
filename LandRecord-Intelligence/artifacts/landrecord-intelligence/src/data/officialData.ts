@@ -4,7 +4,7 @@ export type Grievance = {
   created: string; concern: string; resolution: string; audit: string[];
 };
 export type OfficerDecision = {
-  action: 'verify' | 'return' | 'escalate';
+  action: 'verify' | 'return' | 'escalate' | 'grievance' | 'reject';
   remarks: string;
   timestamp: string;
   officer: string;

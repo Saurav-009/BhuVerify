@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ArrowRight, CheckCircle2, FileImage, FileText, UploadCloud, Cpu, Sparkles, Database, ShieldCheck } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { PageHead, Panel } from '@/components/AppShell';
-import { analyzeDocument, loadSampleAnalysis } from '@/services/analysisService';
+import { analyzeDocument, loadSampleAnalysis, clearStoredAnalysis } from '@/services/analysisService';
 
 export function UploadPage() {
   const [, setLocation] = useLocation();
@@ -26,6 +26,10 @@ export function UploadPage() {
     if (!selectedFile) return;
     setIsBusy(true);
     setBusyStatus('Initializing Dual OCR & Gemini pipeline...');
+
+    // Clear any previously stored analysis so pages show fresh empty state
+    // until the new analysis result arrives
+    clearStoredAnalysis();
 
     try {
       // Small progress display before redirecting to processing animation

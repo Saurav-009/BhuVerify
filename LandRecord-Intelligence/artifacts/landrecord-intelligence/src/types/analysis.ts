@@ -104,6 +104,8 @@ export interface PortalVerification {
 
 // ─────────────────────────────────────────────────────────────
 
+export type DocumentClassification = 'LAND_RECORD' | 'NON_LAND_DOCUMENT' | 'UNCERTAIN';
+
 export interface AnalysisResult {
   document_id: string;
   file_name: string;
@@ -111,6 +113,9 @@ export interface AnalysisResult {
   page_count: number;
   overall_confidence: number;
   status: 'VERIFIED' | 'REVIEW_REQUIRED' | 'DISCREPANCY_FLAGGED';
+  document_classification?: DocumentClassification;
+  document_classification_confidence?: number;
+  document_classification_reason?: string;
   fields: {
     raiyat_name?: ExtractedField;
     father_or_husband_name?: ExtractedField;

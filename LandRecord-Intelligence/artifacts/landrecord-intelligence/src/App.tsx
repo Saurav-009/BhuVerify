@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -19,6 +19,8 @@ import { ArchitecturePage } from '@/pages/Architecture';
 import { ConcernPage } from '@/pages/Concern';
 import DigitalReference from '@/pages/DigitalReference';
 import { GrievanceDetail, OfficialDashboard, OfficialGrievances, OfficialLogin } from '@/pages/Official';
+import { getStoredAnalysis, subscribeAnalysis, loadSampleAnalysis } from '@/services/analysisService';
+import type { LandRecord } from '@/data/mockData';
 import {
   Route,
   Switch,
@@ -29,13 +31,31 @@ import {
 const queryClient = new QueryClient();
 
 function Router() {
-  const [record] = useState(demoRecord);
+  // Derive a "current case" display record from the analysis service.
+  // Kept as lightweight LandRecord shape purely for AppShell header display.
+  const [analysisId, setAnalysisId] = useState(() => getStoredAnalysis().document_id);
   const [, setLocation] = useLocation();
   const [officialAuthed, setOfficialAuthed] = useState(false);
+
+  useEffect(() => {
+    const unsub = subscribeAnalysis((a) => setAnalysisId(a.document_id));
+    return unsub;
+  }, []);
+
+  // Minimal record object used only for AppShell header
+  const headerRecord: LandRecord = {
+    ...demoRecord,
+    id: analysisId || 'No active case',
+  };
+
+  const handleLoadDemo = () => {
+    loadSampleAnalysis().then(() => setLocation('/processing'));
+  };
+
   return <RoutedErrorBoundary>
-    <AppShell record={record}>
+    <AppShell record={headerRecord}>
       <Switch>
-        <Route path="/" component={() => <Workspace onLoad={() => setLocation('/processing')} />} />
+        <Route path="/" component={() => <Workspace onLoad={handleLoadDemo} />} />
         <Route path="/upload" component={UploadPage} />
         <Route path="/processing" component={ProcessPage} />
         <Route path="/record" component={RecordPage} />

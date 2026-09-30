@@ -1,0 +1,298 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: records
+    description: Shared land record and grievance operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /grievances:
+    get:
+      operationId: listGrievances
+      tags: [records]
+      summary: List grievances
+      responses:
+        "200":
+          description: Grievances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Grievance"
+    post:
+      operationId: createGrievance
+      tags: [records]
+      summary: Create a grievance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrievanceInput"
+      responses:
+        "201":
+          description: Created grievance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Grievance"
+  /grievances/citizen-latest:
+    get:
+      operationId: getLatestCitizenGrievance
+      tags: [records]
+      summary: Get the latest grievance for the citizen flow
+      responses:
+        "200":
+          description: Latest grievance, or no grievance yet
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Grievance"
+                  - type: "null"
+  /grievances/{id}:
+    get:
+      operationId: getGrievance
+      tags: [records]
+      summary: Get one grievance
+      parameters:
+        - $ref: "#/components/parameters/RecordId"
+      responses:
+        "200":
+          description: Grievance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Grievance"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /grievances/{id}/status:
+    patch:
+      operationId: updateGrievanceStatus
+      tags: [records]
+      summary: Update a grievance status
+      parameters:
+        - $ref: "#/components/parameters/RecordId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrievanceStatusUpdate"
+      responses:
+        "200":
+          description: Updated grievance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Grievance"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /grievances/{id}/remark:
+    patch:
+      operationId: addGrievanceRemark
+      tags: [records]
+      summary: Add an officer remark to a grievance
+      parameters:
+        - $ref: "#/components/parameters/RecordId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrievanceRemarkInput"
+      responses:
+        "200":
+          description: Updated grievance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Grievance"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /cases:
+    get:
+      operationId: listCases
+      tags: [records]
+      summary: List official cases
+      responses:
+        "200":
+          description: Cases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfficialCase"
+  /cases/{id}:
+    get:
+      operationId: getCase
+      tags: [records]
+      summary: Get one official case
+      parameters:
+        - $ref: "#/components/parameters/RecordId"
+      responses:
+        "200":
+          description: Official case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfficialCase"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /cases/{id}/decision:
+    post:
+      operationId: saveOfficerDecision
+      tags: [records]
+      summary: Save an officer decision
+      parameters:
+        - $ref: "#/components/parameters/RecordId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfficerDecisionInput"
+      responses:
+        "200":
+          description: Updated case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfficialCase"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  parameters:
+    RecordId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+  responses:
+    NotFound:
+      description: Record not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    Grievance:
+      type: object
+      properties:
+        id: { type: string }
+        caseId: { type: string }
+        subject: { type: string }
+        citizen: { type: string }
+        village: { type: string }
+        status:
+          type: string
+          enum: [Draft, Submitted, In Review, Resolved]
+        priority:
+          type: string
+          enum: [Urgent, High, Normal]
+        created: { type: string }
+        concern: { type: string }
+        resolution: { type: string }
+        audit:
+          type: array
+          items: { type: string }
+      required: [id, caseId, subject, citizen, village, status, priority, created, concern, resolution, audit]
+    GrievanceInput:
+      type: object
+      properties:
+        caseId: { type: string, minLength: 1 }
+        subject: { type: string, minLength: 1 }
+        citizen: { type: string, minLength: 1 }
+        village: { type: string, minLength: 1 }
+        priority:
+          type: string
+          enum: [Urgent, High, Normal]
+        concern: { type: string, minLength: 1 }
+      required: [caseId, subject, citizen, village, priority, concern]
+    GrievanceStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Draft, Submitted, In Review, Resolved]
+      required: [status]
+    GrievanceRemarkInput:
+      type: object
+      properties:
+        note: { type: string, minLength: 1 }
+      required: [note]
+    OfficerDecisionInput:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [verify, return, escalate]
+        remarks: { type: string, minLength: 1 }
+      required: [action, remarks]
+    OfficerDecision:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [verify, return, escalate]
+        remarks: { type: string }
+        timestamp: { type: string }
+        officer: { type: string }
+      required: [action, remarks, timestamp, officer]
+    OfficialCase:
+      type: object
+      properties:
+        id: { type: string }
+        owner: { type: string }
+        village: { type: string }
+        risk: { type: number }
+        status: { type: string }
+        priority:
+          type: string
+          enum: [Urgent, High, Normal]
+        decision:
+          oneOf:
+            - $ref: "#/components/schemas/OfficerDecision"
+            - type: "null"
+        auditTrail:
+          type: array
+          items: { type: string }
+      required: [id, owner, village, risk, status, priority, decision, auditTrail]
+

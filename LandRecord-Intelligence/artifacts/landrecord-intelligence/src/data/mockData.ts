@@ -44,6 +44,9 @@ export const demoAnalysisResult = {
   page_count: 1,
   overall_confidence: 0.94,
   status: 'VERIFIED' as const,
+  document_classification: 'LAND_RECORD' as const,
+  document_classification_confidence: 0.99,
+  document_classification_reason: 'Verified Bihar Jamabandi Panji-II digital registry record with 14 grounded attributes.',
   fields: {
     raiyat_name: {
       original: 'श्रीमती कान्ती देवी',

@@ -80,8 +80,17 @@ def fallback_local_extraction(ocr_text: str, document_id: str = "") -> Dict[str,
 
     structured_fields = {}
     for key, data in fields.items():
-        orig = data.get("original") or ""
+        orig = data.get("original")
         norm = data.get("corrected") or data.get("normalized") or orig
+        if not orig and not norm:
+            structured_fields[key] = {
+                "original": None,
+                "normalized": None,
+                "confidence": 0.0,
+                "evidence": []
+            }
+            continue
+
         conf = data.get("confidence", 0.75)
         
         # Build evidence snippet if found in text
@@ -92,7 +101,7 @@ def fallback_local_extraction(ocr_text: str, document_id: str = "") -> Dict[str,
             end = min(len(ocr_text), idx + len(orig) + 15)
             snippet = ocr_text[start:end].replace("\n", " ")
         else:
-            snippet = orig
+            snippet = orig or norm
 
         structured_fields[key] = {
             "original": orig,

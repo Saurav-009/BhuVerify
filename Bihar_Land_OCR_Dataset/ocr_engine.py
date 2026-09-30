@@ -23,14 +23,21 @@ def extract_pdf_digital_text(pdf_path):
     Extract digital text directly from PDF pages using pypdf.
     Returns dict mapping page_number (1-indexed) -> text.
     """
-    reader = PdfReader(str(pdf_path))
-    pages_text = {}
-    for idx, page in enumerate(reader.pages, start=1):
-        txt = page.extract_text() or ""
-        # Clean null characters
-        txt = txt.replace("\x00", "").replace("\ufffd", "").strip()
-        pages_text[idx] = txt
-    return pages_text
+    pdf_path = Path(pdf_path)
+    if pdf_path.suffix.lower() != '.pdf':
+        return {1: ""}
+    try:
+        reader = PdfReader(str(pdf_path))
+        pages_text = {}
+        for idx, page in enumerate(reader.pages, start=1):
+            txt = page.extract_text() or ""
+            # Clean null characters
+            txt = txt.replace("\x00", "").replace("\ufffd", "").strip()
+            pages_text[idx] = txt
+        return pages_text
+    except Exception as e:
+        print(f"[PDF Extract] Non-PDF or corrupted stream on {pdf_path}: {e}")
+        return {1: ""}
 
 def run_tesseract_ocr(img_path, lang="eng"):
     """

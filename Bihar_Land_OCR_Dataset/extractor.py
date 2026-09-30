@@ -37,50 +37,58 @@ def extract_land_record_fields(ocr_text: str, document_id: str = "") -> dict:
     fields["prishth_sankhya"] = safe_numeric_clean(prishth_match.group(1) if prishth_match else None)
 
     # 4. District, Anchal, Halka, Mauza
-    jila_match = re.search(r'िजला\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:]+)', ocr_text)
-    fields["district"] = safe_text_clean("Patna")  # Default from header or text
+    jila_match = re.search(r'(?:जिला|िजला|District)\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:,]+)', ocr_text, re.IGNORECASE)
+    fields["district"] = safe_text_clean(jila_match.group(1).strip() if jila_match else None)
 
-    anchal_match = re.search(r'अंचल\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:]+)', ocr_text)
-    fields["anchal"] = safe_text_clean("Sampatchak")
+    anchal_match = re.search(r'(?:अंचल|Circle|Anchal)\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:,]+)', ocr_text, re.IGNORECASE)
+    fields["anchal"] = safe_text_clean(anchal_match.group(1).strip() if anchal_match else None)
 
-    halka_match = re.search(r'हलका\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:]+)', ocr_text)
-    fields["halka"] = safe_text_clean("BAIRIYA KARNPURA")
+    halka_match = re.search(r'(?:हलका|Halka)\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:,]+)', ocr_text, re.IGNORECASE)
+    fields["halka"] = safe_text_clean(halka_match.group(1).strip() if halka_match else None)
 
-    mauja_match = re.search(r'मौजा\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:]+)', ocr_text)
-    fields["mauja"] = safe_text_clean("Karnpura-121")
+    mauja_match = re.search(r'(?:मौजा|Mauza|Mauja|Village)\s*(?:का\s*नाम)?\s*[:\-]?\s*([^\n:,]+)', ocr_text, re.IGNORECASE)
+    fields["mauja"] = safe_text_clean(mauja_match.group(1).strip() if mauja_match else None)
 
     # 5. Raiyat Name & Father/Husband Name
     raiyat_name = None
     father_name = None
 
     # Search pattern for Raiyat name before father/husband/caste/address
-    name_block = re.search(r'([A-Za-z\s]+|(?:[अ-ह\s]+)),\s*(?:सौहर|पति|पिता|-|\/|\n)', ocr_text)
-    if name_block:
-        candidate = name_block.group(1).strip()
-        if len(candidate) > 2 and candidate not in ["N/A", "n/a", "Patna"]:
-            raiyat_name = candidate
+    raiyat_explicit = re.search(r'(?:रैयत\s*का\s*नाम|Raiyat\s*Name)\s*[:\-]?\s*([^\n,]+)', ocr_text, re.IGNORECASE)
+    if raiyat_explicit:
+        raiyat_name = raiyat_explicit.group(1).strip()
+    else:
+        name_block = re.search(r'([A-Za-z\s]+|(?:[अ-ह\s]+)),\s*(?:सौहर|पति|पिता)', ocr_text)
+        if name_block:
+            candidate = name_block.group(1).strip()
+            if len(candidate) > 2 and candidate not in ["N/A", "n/a", "Patna"]:
+                raiyat_name = candidate
+
+    father_explicit = re.search(r'(?:पिता|पति|Father|Husband)[\s\/\-:]*([^\n,]+)', ocr_text, re.IGNORECASE)
+    if father_explicit:
+        father_name = father_explicit.group(1).strip()
 
     fields["raiyat_name"] = safe_text_clean(raiyat_name)
     fields["father_or_husband_name"] = safe_text_clean(father_name)
 
     # 6. Khata Number (खाता सं०) & Khesra Plot Number (खेसरा सं०)
-    khata_matches = re.findall(r'खाता\s*(?:सं०|सं|नंबर)?\s*[:\-]?\s*(\d+)', ocr_norm)
+    khata_matches = re.findall(r'(?:खाता|Khata)\s*(?:सं०|सं|नंबर|No\.?)?\s*[:\-]?\s*(\d+)', ocr_norm, re.IGNORECASE)
     if not khata_matches:
-        # Fallback table parser
-        khata_table = re.search(r'(\d+)\s+(\d+)\s+(\d+\s+ए\s+[\d.]+\s+डिसमिल|\d+\s+\d+\s+\d+)', ocr_norm)
+        # Fallback table parser only when Jamabandi/land keywords exist
+        khata_table = re.search(r'(\d+)\s+(\d+)\s+(\d+\s+ए\s+[\d.]+\s+डिसमिल)', ocr_norm)
         if khata_table:
             khata_matches = [khata_table.group(1)]
 
     fields["khata_number"] = safe_numeric_clean(khata_matches[0] if khata_matches else None)
 
-    khesra_matches = re.findall(r'(?:खेसरा|प्लॉट|ॉट)\s*(?:सं०|सं|नंबर)?\s*[:\-]?\s*(\d+)', ocr_norm)
+    khesra_matches = re.findall(r'(?:खेसरा|प्लॉट|ॉट|Khesra|Plot|Survey)\s*(?:सं०|सं|नंबर|No\.?)?\s*[:\-]?\s*(\d+)', ocr_norm, re.IGNORECASE)
     if not khesra_matches and 'khata_table' in locals() and khata_table:
         khesra_matches = [khata_table.group(2)]
 
     fields["khesra_plot_number"] = safe_numeric_clean(khesra_matches[0] if khesra_matches else None)
 
     # 7. Land Area (रकबा)
-    area_match = re.search(r'(\d+\s*ए\s*[\d.]+\s*डिसमिल|\d+\s*एकर\s*[\d.]+\s*डिसमिल)', ocr_text)
+    area_match = re.search(r'(\d+\s*ए\s*[\d.]+\s*डिसमिल|\d+\s*एकर\s*[\d.]+\s*डिसमिल|\d+\s*एकड़\s*[\d.]+\s*डिसमिल|[\d.]+\s*(?:Acre|Dismil|Decimal|Hectare))', ocr_text, re.IGNORECASE)
     if not area_match:
         area_match = re.search(r'कुल\s*परमान\s*([^\n]+)', ocr_text)
 
@@ -88,17 +96,19 @@ def extract_land_record_fields(ocr_text: str, document_id: str = "") -> dict:
     fields["land_area"] = safe_text_clean(area_val)
 
     # 8. Mutation Status
-    mutation_match = re.search(r'(Mutation Cases Not Found|दाखिल खारिज[^\n]+)', ocr_text, re.IGNORECASE)
-    mutation_val = mutation_match.group(1).strip() if mutation_match else "Mutation Cases Not Found"
+    mutation_match = re.search(r'(Mutation Cases Not Found|दाखिल[\s\-]*खारिज[^\n]+)', ocr_text, re.IGNORECASE)
+    mutation_val = mutation_match.group(1).strip() if mutation_match else None
     fields["mutation_status"] = safe_text_clean(mutation_val)
 
-    # Overall Extraction Confidence
-    conf_scores = [f["confidence"] for f in fields.values() if f.get("confidence") is not None]
-    overall_conf = round(sum(conf_scores) / len(conf_scores), 4) if conf_scores else 0.0
+    # Overall Extraction Confidence (only count non-null extracted fields)
+    populated_fields = [k for k, f in fields.items() if f.get("original") or f.get("normalized")]
+    conf_scores = [f["confidence"] for f in fields.values() if (f.get("original") or f.get("normalized")) and f.get("confidence") is not None]
+    overall_conf = round(sum(conf_scores) / len(fields), 4) if conf_scores else 0.0
 
     return {
         "document_id": document_id,
         "overall_extraction_confidence": overall_conf,
+        "populated_count": len(populated_fields),
         "fields": fields
     }
 
